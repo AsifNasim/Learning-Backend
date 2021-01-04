@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title%>
+    </title>
+</head>
+<body>
+    <h1>
+        Let's practice something here
+    </h1>
+
+    <ul>
+        <% for(let i =0; i< 9; i++){ %>
+            <li>
+                <%= i%>
+            </li>
+        <%}%>
+
+        <% if(true) {%>
+            <h1>It's true</h1>
+        <%}else{%>
+            <h1>It's False</h1> 
+        <%}%>
+    </ul>
+</body>
+</html>
