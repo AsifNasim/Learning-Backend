@@ -4,12 +4,13 @@ const path = require('path');
 const port = 8000;
 
 const db = require('./config/mongoose');
+const Contact = require('./models/contact')
 const app = express();
 
+// setting the ejs as view engine
 app.set('view engine', 'ejs');
 // views contains all the static/assets files
 app.set('views', path.join(__dirname, 'views'));
-// app.use(express.static('public'));
 
 
 // adding static files using middleware
@@ -66,30 +67,51 @@ app.get('/practice', function(req, res){
 })
 
 app.get('/contact', function(req, res){
-    return res.render('contacts',{
-        title:"Contacts Lists",
-        contact_list:contactList
+    Contact.find({}, function(err, contact){
+        if(err){
+            console.log('error in fetching data from DB');
+            return;
+        }
+        return res.render('contacts',{
+            title:"Contacts Lists",
+            contact_list:contact
+    })
+
+    
     })
 })
 
 
 app.post('/create-contact', function(req, res){
-    console.log("from the post route control", req.myName)
+    // console.log("from the post route control", req.myName)
     // contactList.push({
     //     name:req.body.name,
     //     phone:req.body.phone
     // });
     // we can also use the body itself here
-    contactList.push(req.body);
+    // contactList.push(req.body);
+
+    Contact.create({
+        name:req.body.name,
+        phone:req.body.phone
+    }, function(err, newContact){
+        if(err){
+            console.log('Error in creating the contact');
+            return;
+        }
+
+        console.log('Contact has been created', newContact);
+        return res.redirect('back');
+    });
     
 
     // we can also use redirect('back') if we want to return to the same page
-    return res.redirect('/contact');
+    // return res.redirect('/contact');
     // return res.redirect('/practice');
     // console.log(req.body);
     // console.log(req.body.name);
     // console.log(req.body.phone)
-})
+});
 
 // app.put('/create-contact', function(req, res){
 //     contactList.shift(contactList[0]);
@@ -118,13 +140,25 @@ app.post('/create-contact', function(req, res){
 
 app.get('/delete/', function(req, res){
     // get the query from the url
-    let phone = req.query.phone;
-    let contactIndex = contactList.findIndex(contact => contact.phone == phone);
-    if(contactIndex != -1){
-        contactList.splice(contactIndex, 1);
-    }
+    // let phone = req.query.phone;
+    // fetching id from the url query
+    // let contactIndex = contactList.findIndex(contact => contact.phone == phone);
+    // if(contactIndex != -1){
+    //     contactList.splice(contactIndex, 1);
+    // }
 
-    return res.redirect('back');
+    let id = req.query.id;
+    console.log(id);
+    // we are passing oe error argument in function because we are posting anything back to url
+    Contact.findByIdAndDelete(id, function(err){
+        if(err){
+            console.log('error in fetching the ID');
+            return;
+        }
+        return res.redirect('back');
+    })
+
+   
 })
 
 app.listen(port, function(err){
