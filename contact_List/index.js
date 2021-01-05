@@ -3,6 +3,7 @@ const path = require('path');
 
 const port = 8000;
 
+const db = require('./config/mongoose');
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -90,8 +91,39 @@ app.post('/create-contact', function(req, res){
     // console.log(req.body.phone)
 })
 
-app.put('/create-contact', function(req, res){
-    contactList.shift(contactList[0]);
+// app.put('/create-contact', function(req, res){
+//     contactList.shift(contactList[0]);
+//     return res.redirect('back');
+// })
+// Query params
+// app.get('/delete', function(req, res){
+//     // string params
+// // app.get('/delete/:phone', function(req, res){
+//     // string param
+//     // console.log(req.params)
+//     // let phone = req.params.phone;
+//     // Query Params
+//     console.log(req.query);
+//     let phone = req.query.phone;
+
+//     let contactIndex = contactList.findIndex( contact => contact.phone == phone);
+
+//     if(contactIndex != -1){
+//         contactList.splice(contactIndex, 1);
+//     }
+
+//     return res.redirect('back');
+    
+// })
+
+app.get('/delete/', function(req, res){
+    // get the query from the url
+    let phone = req.query.phone;
+    let contactIndex = contactList.findIndex(contact => contact.phone == phone);
+    if(contactIndex != -1){
+        contactList.splice(contactIndex, 1);
+    }
+
     return res.redirect('back');
 })
 
